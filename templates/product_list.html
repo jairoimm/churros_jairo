@@ -1,0 +1,27 @@
+<h1>Churros Jairo</h1>
+
+{% url 'cart_detail' %}
+    Ver carrito
+</a>
+
+<hr>
+
+{% for product in products %}
+
+<div>
+
+    <h2>{{ product.name }}</h2>
+
+    <p>{{ product.description }}</p>
+
+    <p>${{ product.price }}</p>
+
+    {% url 'add_to_cart' product.id %}
+        Agregar al carrito
+    </a>
+
+</div>
+
+<hr>
+
+{% endfor %}

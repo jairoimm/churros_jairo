@@ -1,0 +1,17 @@
+<h1>Mi Carrito</h1>
+
+{% for key, item in cart.items %}
+
+<p>
+    {{ item.name }}
+    -
+    {{ item.quantity }}
+    -
+    ${{ item.price }}
+</p>
+
+{% url 'checkout' %}
+    Finalizar Compra
+</a>
+
+{% endfor %}
