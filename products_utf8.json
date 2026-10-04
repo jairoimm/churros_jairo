@@ -1,0 +1,252 @@
+[
+  {
+    "model": "products.extra",
+    "pk": 1,
+    "fields": {
+      "name": "Chocolate",
+      "price": "500",
+      "active": true
+    }
+  },
+  {
+    "model": "products.extra",
+    "pk": 3,
+    "fields": {
+      "name": "Manjar",
+      "price": "500",
+      "active": true
+    }
+  },
+  {
+    "model": "products.extra",
+    "pk": 4,
+    "fields": {
+      "name": "Leche Condensada",
+      "price": "500",
+      "active": true
+    }
+  },
+  {
+    "model": "products.extra",
+    "pk": 7,
+    "fields": {
+      "name": "Azucar Flor",
+      "price": "0",
+      "active": true
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 1,
+    "fields": {
+      "name": "Churros Tradicionales",
+      "description": "Deliciosos churros tradicionales recién preparados, crujientes por fuera y suaves por dentro. Personalízalos con tus toppings favoritos.",
+      "price": "4500",
+      "old_price": null,
+      "badge_text": null,
+      "image": "products/125C11E0-80DB-48BB-B18E-63DC96A301CD_sGHaFKM.jpeg",
+      "active": true,
+      "created_at": "2026-09-24T00:08:36.190Z",
+      "updated_at": "2026-10-04T00:29:50.846Z",
+      "extras": [
+        3,
+        4,
+        7,
+        1
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 2,
+    "fields": {
+      "name": "Churros Rellenos",
+      "description": "Deliciosos churros rellenos de chocolate, manjar o leche condensada. Elige tu sabor favorito y personalízalos con toppings adicionales para una experiencia aún más dulce.\r\n\r\nRelleno manjar incluido",
+      "price": "6500",
+      "old_price": null,
+      "badge_text": null,
+      "image": "products/Diseño_sin_título_12.png",
+      "active": true,
+      "created_at": "2026-09-24T17:36:43.076Z",
+      "updated_at": "2026-10-04T00:38:39.148Z",
+      "extras": [
+        4,
+        7,
+        1,
+        3
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 3,
+    "fields": {
+      "name": "Churro Jumbo",
+      "description": "Nuestro churro jumbo de 18 cm destaca por su tamaño y sabor. Recién preparado, crujiente por fuera y suave por dentro. Personalízalo con chocolate, manjar o leche condensada.\r\n\r\nRelleno manjar incluido",
+      "price": "1700",
+      "old_price": null,
+      "badge_text": null,
+      "image": "products/Jumbo-Churro.jpg",
+      "active": true,
+      "created_at": "2026-10-03T23:10:33.254Z",
+      "updated_at": "2026-10-04T00:39:45.379Z",
+      "extras": [
+        1,
+        3,
+        4,
+        7
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 4,
+    "fields": {
+      "name": "Pack Familiar",
+      "description": "20 Churros Tradicionales recién preparados.\r\n\r\nIdeal para compartir en familia o reuniones.",
+      "price": "13500",
+      "old_price": "14500",
+      "badge_text": "SUPER PROMO",
+      "image": "products/IMG_20190812_182641.jpg",
+      "active": true,
+      "created_at": "2026-10-04T00:13:44.975Z",
+      "updated_at": "2026-10-04T02:59:30.168Z",
+      "extras": [
+        1,
+        3,
+        4,
+        7
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 5,
+    "fields": {
+      "name": "Pack Mix",
+      "description": "6 Churros Tradicionales\r\n\r\n+\r\n\r\n6 Churros Rellenos\r\n\r\nChocolate, Manjar o Leche Condensada.",
+      "price": "9990",
+      "old_price": "11000",
+      "badge_text": "MAS VENDIDO",
+      "image": "products/rosy-ko-23dFj4fMPnc-unsplash.jpg",
+      "active": true,
+      "created_at": "2026-10-04T00:14:30.659Z",
+      "updated_at": "2026-10-04T02:59:30.180Z",
+      "extras": [
+        1,
+        3,
+        4,
+        7
+      ]
+    }
+  },
+  {
+    "model": "products.product",
+    "pk": 6,
+    "fields": {
+      "name": "Pack Pareja",
+      "description": "\nPack Pareja\n\n6 Churros Tradicionales\n\n+\n\n2 Churros Jumbo\n\n+\n\n1 Salsa adicional\n\n$7.990\n",
+      "price": "7990",
+      "old_price": null,
+      "badge_text": "ESPECIAL PAREJA",
+      "image": "products/spencer-davis-qw6qQQyYQpo-unsplash.jpg",
+      "active": true,
+      "created_at": "2026-10-04T00:14:30.670Z",
+      "updated_at": "2026-10-04T02:59:30.200Z",
+      "extras": [
+        1,
+        3,
+        4,
+        7
+      ]
+    }
+  },
+  {
+    "model": "products.productportion",
+    "pk": 1,
+    "fields": {
+      "product": 1,
+      "name": "6 unidades",
+      "price": "4500",
+      "order": 1,
+      "active": true
+    }
+  },
+  {
+    "model": "products.productportion",
+    "pk": 2,
+    "fields": {
+      "product": 1,
+      "name": "12 unidades",
+      "price": "8500",
+      "order": 2,
+      "active": true
+    }
+  },
+  {
+    "model": "products.productportion",
+    "pk": 3,
+    "fields": {
+      "product": 1,
+      "name": "20 unidades",
+      "price": "14500",
+      "order": 3,
+      "active": true
+    }
+  },
+  {
+    "model": "products.productportion",
+    "pk": 4,
+    "fields": {
+      "product": 2,
+      "name": "6 unidades",
+      "price": "6500",
+      "order": 0,
+      "active": true
+    }
+  },
+  {
+    "model": "products.productportion",
+    "pk": 5,
+    "fields": {
+      "product": 2,
+      "name": "12  unidades",
+      "price": "12500",
+      "order": 0,
+      "active": true
+    }
+  },
+  {
+    "model": "products.productportion",
+    "pk": 6,
+    "fields": {
+      "product": 2,
+      "name": "20 unidades",
+      "price": "21000",
+      "order": 0,
+      "active": true
+    }
+  },
+  {
+    "model": "products.productportion",
+    "pk": 7,
+    "fields": {
+      "product": 3,
+      "name": "1 unidad",
+      "price": "1700",
+      "order": 0,
+      "active": true
+    }
+  },
+  {
+    "model": "products.productportion",
+    "pk": 8,
+    "fields": {
+      "product": 3,
+      "name": "3 unidades",
+      "price": "4800",
+      "order": 0,
+      "active": true
+    }
+  }
+]
