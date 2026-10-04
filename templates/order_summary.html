@@ -1,0 +1,163 @@
+{% extends "base.html" %}
+
+{% block content %}
+
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm bg-white p-4 p-md-5">
+
+            <div class="card-body p-0">
+
+                <div class="text-center mb-4">
+                    <div class="fs-1 mb-2">🎉</div>
+                    <h1 class="fw-bold text-dark">¡Pedido Registrado con Éxito!</h1>
+                    <p class="text-muted">Pedido #{{ order.id }}</p>
+                </div>
+
+                <!-- Alerta de Confirmación WhatsApp -->
+                <div id="successAlert" class="alert alert-success d-none mb-4 rounded-4 shadow-sm" role="alert">
+                    <h5 class="fw-bold mb-1">✅ ¡Pedido enviado por WhatsApp!</h5>
+                    <p class="mb-0 small" id="alertMessage">
+                        {% if order.delivery_type == 'delivery' %}
+                        Recuerda realizar la transferencia y enviar el comprobante por WhatsApp. Una vez verificado, tu pedido ingresará a cocina para preparación y despacho.
+                        {% else %}
+                        Tu pedido ha sido enviado. Recuerda que puedes pagar al retirar en el local con efectivo o transferencia.
+                        {% endif %}
+                    </p>
+                </div>
+
+                <!-- Detalle del Cliente y Entrega -->
+                <div class="bg-light p-4 rounded-4 mb-4">
+                    <h5 class="fw-bold text-dark mb-3">📋 Datos del Cliente</h5>
+                    <div class="row g-2 text-secondary">
+                        <div class="col-sm-6">
+                            <strong>Nombre:</strong> {{ order.customer_name }}
+                        </div>
+                        <div class="col-sm-6">
+                            <strong>Teléfono:</strong> {{ order.phone }}
+                        </div>
+                        <div class="col-sm-6">
+                            <strong>Tipo de Entrega:</strong> 
+                            <span class="badge text-white" style="background-color: #ff4d88;">
+                                {{ delivery_label }}
+                            </span>
+                        </div>
+                        {% if order.delivery_type == 'delivery' %}
+                        <div class="col-12">
+                            <strong>Dirección:</strong> {{ order.address }}
+                        </div>
+                        {% endif %}
+                    </div>
+                </div>
+
+                <!-- Lista de Productos -->
+                <h5 class="fw-bold text-dark mb-3">🛒 Productos Seleccionados</h5>
+                <div class="table-responsive mb-4">
+                    <table class="table align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="py-3">Producto / Extras</th>
+                                <th class="py-3 text-center">Cantidad</th>
+                                <th class="py-3 text-end">Subtotal</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for item in items %}
+                            <tr>
+                                <td class="fw-semibold text-dark">{{ item.product_name }}</td>
+                                <td class="text-center">
+                                    <span class="badge bg-light text-dark border px-3 py-2 fs-6">
+                                        {{ item.quantity }}
+                                    </span>
+                                </td>
+                                <td class="text-end fw-bold text-danger">${{ item.subtotal }}</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                <!-- Total Final -->
+                <div class="d-flex justify-content-between align-items-center mb-4 p-3 bg-light rounded-4">
+                    <h4 class="text-secondary mb-0 fw-bold">Total Final:</h4>
+                    <h3 class="text-danger fw-bold mb-0">
+                        ${{ order.total }}
+                    </h3>
+                </div>
+
+                <!-- Instrucciones de Pago según tipo de entrega -->
+                {% if order.delivery_type == 'delivery' %}
+                <div class="border border-pink p-4 rounded-4 mb-4" style="border-color: #ffb3c9 !important; background-color: #fff9fb;">
+                    <h5 class="fw-bold text-dark mb-2">🚚 Entrega a domicilio</h5>
+                    <p class="text-secondary small mb-2">Para comenzar la preparación debes realizar una transferencia a los siguientes datos y enviar el comprobante por WhatsApp:</p>
+                    <p class="text-danger fw-bold small mb-3">⚠️ Tu pedido ingresará a cocina una vez confirmado el comprobante de transferencia.</p>
+                    
+                    <div class="bg-white p-3 rounded-3 border mb-3 small text-secondary" id="bankDetails">
+                        <p class="mb-1"><strong>Banco:</strong> Mercado Pago</p>
+                        <p class="mb-1"><strong>Titular:</strong> Jairo Muñoz</p>
+                        <p class="mb-1"><strong>Tipo Cuenta:</strong> Cuenta Vista</p>
+                        <p class="mb-1"><strong>Número:</strong> 1088603134</p>
+                        <p class="mb-0"><strong>RUT:</strong> 204553343</p>
+                    </div>
+
+                    <button type="button" class="btn btn-outline-pink w-100 py-2 shadow-sm" onclick="copyBankData()">
+                        📋 COPIAR DATOS BANCARIOS
+                    </button>
+                </div>
+                {% else %}
+                <div class="border border-pink p-4 rounded-4 mb-4" style="border-color: #ffb3c9 !important; background-color: #fff9fb;">
+                    <h5 class="fw-bold text-dark mb-2">🏠 Retiro en Local</h5>
+                    <p class="text-secondary small mb-2">Puedes pagar al retirar en el local (Efectivo o Transferencia) o transferir por adelantado usando los siguientes datos:</p>
+                    
+                    <div class="bg-white p-3 rounded-3 border mb-3 small text-secondary" id="bankDetails">
+                        <p class="mb-1"><strong>Banco:</strong> Mercado Pago</p>
+                        <p class="mb-1"><strong>Titular:</strong> Jairo Muñoz</p>
+                        <p class="mb-1"><strong>Tipo Cuenta:</strong> Cuenta Vista</p>
+                        <p class="mb-1"><strong>Número:</strong> 1088603134</p>
+                        <p class="mb-0"><strong>RUT:</strong> 204553343</p>
+                    </div>
+
+                    <button type="button" class="btn btn-outline-pink w-100 py-2 shadow-sm mb-3" onclick="copyBankData()">
+                        📋 COPIAR DATOS BANCARIOS
+                    </button>
+
+                    <p class="mb-0 text-secondary small"><strong>Dirección de retiro:</strong> #pasaje quellon #4014</p>
+                </div>
+                {% endif %}
+
+                <!-- Botón Principal WhatsApp -->
+                <div class="d-grid gap-2">
+                    <a href="{{ whatsapp_url }}" target="_blank" id="whatsappBtn" class="btn btn-pink btn-lg py-3 shadow-sm text-decoration-none text-center fw-bold fs-5" onclick="handleWhatsAppClick()">
+                        💬 ENVIAR PEDIDO POR WHATSAPP
+                    </a>
+                    <a href="{% url 'product_list' %}" class="btn btn-outline-secondary py-2 rounded-pill text-center text-decoration-none">
+                        ← Volver al Menú
+                    </a>
+                </div>
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+<script>
+function copyBankData() {
+    const text = `Banco: Mercado Pago\nTitular: Jairo Muñoz\nTipo Cuenta: Cuenta Vista\nNúmero: 1088603134\nRUT: 204553343`;
+    navigator.clipboard.writeText(text).then(() => {
+        alert("¡Datos bancarios copiados al portapapeles! 📋");
+    }).catch(err => {
+        console.error('Error al copiar: ', err);
+    });
+}
+
+function handleWhatsAppClick() {
+    const alertBox = document.getElementById('successAlert');
+    if (alertBox) {
+        alertBox.classList.remove('d-none');
+        alertBox.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    }
+}
+</script>
+
+{% endblock %}

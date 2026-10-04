@@ -1,17 +1,96 @@
-<h1>Mi Carrito</h1>
+{% extends "base.html" %}
 
-{% for key, item in cart.items %}
+{% block content %}
 
-<p>
-    {{ item.name }}
-    -
-    {{ item.quantity }}
-    -
-    ${{ item.price }}
-</p>
+<div class="row justify-content-center">
+    <div class="col-lg-8">
+        <div class="card shadow-sm bg-white p-4 p-md-5">
 
-{% url 'checkout' %}
-    Finalizar Compra
-</a>
+            <div class="card-body p-0">
 
-{% endfor %}
+                <h1 class="mb-4 fw-bold text-dark">
+
+                    Mi Pedido 🛒
+
+                </h1>
+
+                {% if cart %}
+
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="py-3">Producto</th>
+                                <th class="py-3 text-center">Cantidad</th>
+                                <th class="py-3 text-end">Precio</th>
+                                <th class="py-3 text-end">Acción</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+
+                            {% for key, item in cart.items %}
+
+                            <tr>
+
+                                <td class="fw-semibold text-dark">{{ item.name }}</td>
+
+                                <td class="text-center">
+                                    <span class="badge bg-light text-dark border px-3 py-2 fs-6">
+                                        {{ item.quantity }}
+                                    </span>
+                                </td>
+
+                                <td class="text-end fw-bold text-danger">${{ item.price }} c/u</td>
+
+                                <td class="text-end">
+                                    <a href="{% url 'remove_from_cart' key %}" class="btn btn-sm btn-outline-danger rounded-pill text-decoration-none">
+                                        🗑️ Eliminar
+                                    </a>
+                                </td>
+
+                            </tr>
+
+                            {% endfor %}
+
+                        </tbody>
+                    </table>
+                </div>
+
+                <hr class="my-4">
+
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h4 class="text-secondary mb-0">Total a pagar:</h4>
+                    <h3 class="text-danger fw-bold mb-0">
+                        ${{ total }}
+                    </h3>
+                </div>
+
+                <div class="d-grid gap-2">
+                    <a href="{% url 'checkout' %}" class="btn btn-pink btn-lg py-3 shadow-sm text-decoration-none">
+                        ✨ Finalizar Compra
+                    </a>
+                    <a href="{% url 'product_list' %}" class="btn btn-outline-secondary py-2 rounded-pill text-decoration-none">
+                        ← Seguir comprando
+                    </a>
+                </div>
+
+                {% else %}
+
+                <div class="text-center py-5">
+                    <div class="fs-1 mb-3">🛒</div>
+                    <h4 class="text-muted mb-3">Tu carrito está vacío</h4>
+                    <p class="text-secondary mb-4">¿Qué tal unos deliciosos churros para endulzar el día?</p>
+                    <a href="{% url 'product_list' %}" class="btn btn-pink px-4 py-2 text-decoration-none">
+                        Ver Menú
+                    </a>
+                </div>
+
+                {% endif %}
+
+            </div>
+
+        </div>
+    </div>
+</div>
+
+{% endblock %}
