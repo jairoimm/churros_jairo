@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pedido Listo - Buen Apetito</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                👨‍🍳 Buen <span>Apetito</span>
+            </a>
+            <nav class="nav-links">
+                <a href="index.html">Inicio</a>
+                <a href="catalog.html">Menú</a>
+                <a href="cart.html" class="cart-icon-btn">
+                    🛒
+                    <span class="cart-badge" style="display: none;">0</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="summary-container">
+            <div class="success-banner">
+                <h2>¡Pedido listo para enviar! 🎉</h2>
+                <p>Gracias por elegir Buen Apetito 💖</p>
+            </div>
+
+            <div id="summary-content">
+                <!-- Loaded dynamically -->
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Buen Apetito. Todos los derechos reservados. 🍩</p>
+    </footer>
+
+    <script type="module">
+        import { getCart, clearCart } from './assets/js/cart.js';
+        import { getCheckoutData } from './assets/js/checkout.js';
+        import { formatPrice } from './assets/js/products.js';
+        import { generateWhatsAppUrl } from './assets/js/whatsapp.js';
+        import './assets/js/app.js';
+
+        const cart = getCart();
+        const checkoutData = getCheckoutData();
+
+        if (Object.keys(cart).length === 0 || !checkoutData) {
+            window.location.href = 'cart.html';
+        }
+
+        const container = document.getElementById('summary-content');
+        const deliveryLabel = checkoutData.delivery_type === 'delivery' ? 'Delivery' : 'Retiro en Local';
+        
+        let subtotal = 0;
+        let itemsHtml = '';
+        Object.values(cart).forEach(item => {
+            const itemSubtotal = item.price * item.quantity;
+            subtotal += itemSubtotal;
+            itemsHtml += `
+                <div style="display: flex; justify-content: space-between; margin-bottom: 0.75rem; font-size: 0.95rem;">
+                    <span>• ${item.name} <strong>x${item.quantity}</strong></span>
+                    <span style="font-weight: 600;">${formatPrice(itemSubtotal)}</span>
+                </div>
+            `;
+        });
+
+        // Optional delivery fee simulation if delivery selected
+        const deliveryFee = checkoutData.delivery_type === 'delivery' ? 1500 : 0;
+        const totalFinal = subtotal + deliveryFee;
+
+        const randomOrderNum = Math.floor(1000 + Math.random() * 9000);
+
+        container.innerHTML = `
+            <div class="order-details-card">
+                <div style="text-align: center; margin-bottom: 1rem; font-weight: 700; color: var(--primary-color);">
+                    Pedido N° #${randomOrderNum}
+                </div>
+                <p><strong>Cliente:</strong> ${checkoutData.customer_name}</p>
+                <p><strong>Teléfono:</strong> ${checkoutData.phone}</p>
+                <p><strong>Tipo Entrega:</strong> ${deliveryLabel}</p>
+                ${checkoutData.delivery_type === 'delivery' ? `<p><strong>Dirección:</strong> ${checkoutData.address}</p>` : ''}
+            </div>
+
+            <div class="order-details-card">
+                <h3>🛒 Productos</h3>
+                <div style="margin-top: 0.5rem;">
+                    ${itemsHtml}
+                </div>
+                <div class="summary-row" style="margin-top: 1rem; border-top: 1px solid var(--border-color); padding-top: 0.75rem;">
+                    <span>Subtotal</span>
+                    <span>${formatPrice(subtotal)}</span>
+                </div>
+                ${checkoutData.delivery_type === 'delivery' ? `
+                <div class="summary-row">
+                    <span>Delivery</span>
+                    <span>${formatPrice(deliveryFee)}</span>
+                </div>
+                ` : ''}
+                <div class="summary-row total">
+                    <span>Total Final</span>
+                    <span style="color: var(--primary-color);">${formatPrice(totalFinal)}</span>
+                </div>
+            </div>
+
+            <button id="send-whatsapp-btn" class="btn btn-whatsapp" style="width: 100%; padding: 1.2rem; font-size: 1.15rem;">
+                Enviar por WhatsApp 🟢
+            </button>
+            <div style="text-align: center; margin-top: 1rem;">
+                <a href="index.html" class="btn btn-secondary" style="font-size: 0.95rem; padding: 0.6rem 1.5rem;">Volver al Inicio</a>
+            </div>
+        `;
+
+        document.getElementById('send-whatsapp-btn').addEventListener('click', () => {
+            const waUrl = generateWhatsAppUrl(checkoutData, cart, totalFinal);
+            clearCart();
+            window.open(waUrl, '_blank');
+        });
+    </script>
+</body>
+</html>

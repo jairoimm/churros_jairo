@@ -1,0 +1,41 @@
+:root {
+    --bg-color: #FFF5F7;
+    --primary-color: #FF2A6D;
+    --primary-hover: #E0185A;
+    --primary-light: #FFE5EC;
+    --accent-pink: #FF8FAB;
+    --text-dark: #3A241D;
+    --text-muted: #7A6258;
+    --card-bg: #FFFFFF;
+    --cream: #FFF9F0;
+    --border-color: #FCE4EC;
+    --shadow: 0 10px 30px rgba(255, 42, 109, 0.08);
+    --shadow-hover: 0 15px 35px rgba(255, 42, 109, 0.15);
+    --radius: 20px;
+    --radius-sm: 12px;
+    --transition: all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1);
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    background-color: var(--bg-color);
+    color: var(--text-dark);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+    padding-bottom: 80px; /* Space for bottom nav on mobile */
+}
+
+a {
+    text-decoration: none;
+    color: inherit;
+}
+
+ul {
+    list-style: none;
+}

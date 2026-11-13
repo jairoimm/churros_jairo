@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tu Carrito - Buen Apetito</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                👨‍🍳 Buen <span>Apetito</span>
+            </a>
+            <nav class="nav-links">
+                <a href="index.html">Inicio</a>
+                <a href="catalog.html">Menú</a>
+                <a href="cart.html" class="cart-icon-btn active">
+                    🛒
+                    <span class="cart-badge" style="display: none;">0</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div class="section-title">
+            <h2>Tu Carrito 🛒</h2>
+        </div>
+
+        <div id="cart-content">
+            <!-- Loaded dynamically -->
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Buen Apetito. Todos los derechos reservados. 🍩</p>
+    </footer>
+
+    <script type="module">
+        import { getCart, removeFromCart, updateQuantity, getCartTotal, clearCart } from './assets/js/cart.js';
+        import { formatPrice } from './assets/js/products.js';
+        import './assets/js/app.js';
+
+        function renderCart() {
+            const cart = getCart();
+            const container = document.getElementById('cart-content');
+            const keys = Object.keys(cart);
+
+            if (keys.length === 0) {
+                container.innerHTML = `
+                    <div style="text-align: center; padding: 4rem 1rem; background: var(--card-bg); border-radius: var(--radius); box-shadow: var(--shadow);">
+                        <h3 style="font-size: 1.5rem; margin-bottom: 1rem; color: var(--text-dark);">Tu carrito está vacío 🍩</h3>
+                        <p style="color: var(--text-muted); margin-bottom: 2rem;">Aún no has agregado ningún churro delicioso a tu pedido.</p>
+                        <a href="catalog.html" class="btn">Ver Menú</a>
+                    </div>
+                `;
+                return;
+            }
+
+            let total = getCartTotal();
+
+            container.innerHTML = `
+                <div class="cart-container">
+                    <div class="cart-items">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                            <h3 style="font-size: 1.2rem; font-weight: 700;">Productos Seleccionados</h3>
+                            <button id="clear-cart-btn" style="background: none; border: none; color: #dc3545; cursor: pointer; font-size: 1.1rem;" title="Vaciar Carrito">🗑️</button>
+                        </div>
+                        <div id="cart-items-list">
+                            ${keys.map(key => {
+                                const item = cart[key];
+                                const imgSrc = item.image || 'assets/img/products/125C11E0-80DB-48BB-B18E-63DC96A301CD_sGHaFKM.jpeg';
+                                return `
+                                    <div class="cart-item">
+                                        <img src="${imgSrc}" alt="${item.name}">
+                                        <div class="cart-item-details">
+                                            <h3>${item.name}</h3>
+                                            <div class="cart-item-price">${formatPrice(item.price * item.quantity)}</div>
+                                        </div>
+                                        <div class="cart-item-actions">
+                                            <div style="display: flex; align-items: center; gap: 0.4rem;">
+                                                <button class="qty-btn decrease-item-btn" data-key="${key}" style="width: 30px; height: 30px; font-size: 0.9rem;">-</button>
+                                                <span style="font-weight: 700; width: 24px; text-align: center; font-size: 0.95rem;">${item.quantity}</span>
+                                                <button class="qty-btn increase-item-btn" data-key="${key}" style="width: 30px; height: 30px; font-size: 0.9rem;">+</button>
+                                            </div>
+                                            <button class="remove-item-btn" data-key="${key}" style="background: none; border: none; color: #dc3545; cursor: pointer; font-weight: 700; font-size: 1.2rem;" title="Eliminar">×</button>
+                                        </div>
+                                    </div>
+                                `;
+                            }).join('')}
+                        </div>
+                        <div style="margin-top: 1.5rem; display: flex; justify-content: space-between;">
+                            <a href="catalog.html" class="btn btn-secondary" style="font-size: 0.9rem; padding: 0.6rem 1.2rem;">← Seguir Comprando</a>
+                        </div>
+                    </div>
+
+                    <div class="cart-summary">
+                        <h3 style="font-size: 1.2rem; font-weight: 700; margin-bottom: 1.5rem;">Resumen de la Orden</h3>
+                        <div class="summary-row">
+                            <span>Subtotal</span>
+                            <span>${formatPrice(total)}</span>
+                        </div>
+                        <div class="summary-row">
+                            <span>Despacho / Retiro</span>
+                            <span>Calculado en Checkout</span>
+                        </div>
+                        <div class="summary-row total">
+                            <span>Total</span>
+                            <span>${formatPrice(total)}</span>
+                        </div>
+                        <a href="checkout.html" class="btn" style="width: 100%; margin-top: 1.5rem; text-align: center; padding: 1rem;">
+                            Continuar Compra ➔
+                        </a>
+                    </div>
+                </div>
+            `;
+
+            container.querySelectorAll('.decrease-item-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const key = btn.dataset.key;
+                    const item = cart[key];
+                    if (item.quantity > 1) {
+                        updateQuantity(key, item.quantity - 1);
+                        renderCart();
+                    } else {
+                        removeFromCart(key);
+                        renderCart();
+                    }
+                });
+            });
+
+            container.querySelectorAll('.increase-item-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const key = btn.dataset.key;
+                    const item = cart[key];
+                    updateQuantity(key, item.quantity + 1);
+                    renderCart();
+                });
+            });
+
+            container.querySelectorAll('.remove-item-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    const key = btn.dataset.key;
+                    removeFromCart(key);
+                    renderCart();
+                });
+            });
+
+            const clearBtn = document.getElementById('clear-cart-btn');
+            if (clearBtn) {
+                clearBtn.addEventListener('click', () => {
+                    if (confirm('¿Estás seguro de que deseas vaciar tu carrito?')) {
+                        clearCart();
+                        renderCart();
+                    }
+                });
+            }
+        }
+
+        renderCart();
+        window.addEventListener('cartUpdated', renderCart);
+    </script>
+</body>
+</html>

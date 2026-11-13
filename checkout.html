@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Checkout - Buen Apetito</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                👨‍🍳 Buen <span>Apetito</span>
+            </a>
+            <nav class="nav-links">
+                <a href="index.html">Inicio</a>
+                <a href="catalog.html">Menú</a>
+                <a href="cart.html" class="cart-icon-btn">
+                    🛒
+                    <span class="cart-badge" style="display: none;">0</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div style="margin-bottom: 1.5rem;">
+            <a href="cart.html" style="color: var(--primary-color); font-weight: 600;">← Volver al Carrito</a>
+        </div>
+
+        <div class="checkout-container">
+            <h2 style="font-size: 1.8rem; font-weight: 800; margin-bottom: 1.5rem; color: var(--text-dark);">Checkout 📋</h2>
+
+            <form id="checkout-form">
+                <div style="margin-bottom: 1.5rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-dark);">Tus Datos</h3>
+                    <div class="form-group">
+                        <label for="customer_name">Nombre y Apellido *</label>
+                        <input type="text" id="customer_name" name="customer_name" class="form-control" placeholder="Ingresa tu nombre" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="phone">Teléfono / Celular *</label>
+                        <input type="tel" id="phone" name="phone" class="form-control" placeholder="+56 9 1234 5678" required>
+                    </div>
+
+                    <div class="form-group" id="address-group" style="display: none;">
+                        <label for="address">Dirección de Entrega *</label>
+                        <input type="text" id="address" name="address" class="form-control" placeholder="Ej: Av. Siempre Viva 123">
+                    </div>
+                </div>
+
+                <div style="margin-bottom: 2rem;">
+                    <h3 style="font-size: 1.1rem; font-weight: 700; margin-bottom: 1rem; color: var(--text-dark);">Tipo de Entrega</h3>
+                    <div class="delivery-options">
+                        <label class="delivery-card selected" id="card-delivery">
+                            <input type="radio" name="delivery_type" value="delivery" checked>
+                            🚚 Delivery
+                        </label>
+                        <label class="delivery-card" id="card-pickup">
+                            <input type="radio" name="delivery_type" value="pickup">
+                            🏠 Retiro en Local
+                        </label>
+                    </div>
+                </div>
+
+                <button type="submit" class="btn" style="width: 100%; padding: 1.1rem; font-size: 1.1rem;">
+                    Confirmar Pedido ➔
+                </button>
+            </form>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Buen Apetito. Todos los derechos reservados. 🍩</p>
+    </footer>
+
+    <script type="module">
+        import { getCart } from './assets/js/cart.js';
+        import { saveCheckoutData, getCheckoutData } from './assets/js/checkout.js';
+        import './assets/js/app.js';
+
+        const cart = getCart();
+        if (Object.keys(cart).length === 0) {
+            window.location.href = 'cart.html';
+        }
+
+        const cardDelivery = document.getElementById('card-delivery');
+        const cardPickup = document.getElementById('card-pickup');
+        const addressGroup = document.getElementById('address-group');
+        const addressInput = document.getElementById('address');
+
+        const radioDelivery = cardDelivery.querySelector('input');
+        const radioPickup = cardPickup.querySelector('input');
+
+        function updateDeliveryUI() {
+            if (radioDelivery.checked) {
+                cardDelivery.classList.add('selected');
+                cardPickup.classList.remove('selected');
+                addressGroup.style.display = 'block';
+                addressInput.setAttribute('required', 'required');
+            } else {
+                cardPickup.classList.add('selected');
+                cardDelivery.classList.remove('selected');
+                addressGroup.style.display = 'none';
+                addressInput.removeAttribute('required');
+            }
+        }
+
+        cardDelivery.addEventListener('click', () => {
+            radioDelivery.checked = true;
+            updateDeliveryUI();
+        });
+
+        cardPickup.addEventListener('click', () => {
+            radioPickup.checked = true;
+            updateDeliveryUI();
+        });
+
+        // Initialize default UI state
+        updateDeliveryUI();
+
+        const savedData = getCheckoutData();
+        if (savedData) {
+            if (savedData.customer_name) document.getElementById('customer_name').value = savedData.customer_name;
+            if (savedData.phone) document.getElementById('phone').value = savedData.phone;
+            if (savedData.delivery_type === 'pickup') {
+                radioPickup.checked = true;
+                updateDeliveryUI();
+            } else {
+                radioDelivery.checked = true;
+                updateDeliveryUI();
+                if (savedData.address) addressInput.value = savedData.address;
+            }
+        }
+
+        document.getElementById('checkout-form').addEventListener('submit', (e) => {
+            e.preventDefault();
+            const formData = {
+                customer_name: document.getElementById('customer_name').value.trim(),
+                phone: document.getElementById('phone').value.trim(),
+                delivery_type: radioDelivery.checked ? 'delivery' : 'pickup',
+                address: radioDelivery.checked ? addressInput.value.trim() : ''
+            };
+
+            saveCheckoutData(formData);
+            window.location.href = 'summary.html';
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Buen Apetito - Los Mejores Churros de Puente Alto</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                👨‍🍳 Buen <span>Apetito</span>
+            </a>
+            <nav class="nav-links">
+                <a href="index.html" class="active">Inicio</a>
+                <a href="catalog.html">Menú</a>
+                <a href="cart.html" class="cart-icon-btn">
+                    🛒
+                    <span class="cart-badge" style="display: none;">0</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <section class="hero">
+            <div class="hero-content">
+                <h1>Los churros más <span>irresistibles</span> de Puente Alto ✨</h1>
+                <p>Recién preparados, rellenos de chocolate, manjar y leche condensada.</p>
+                <div style="display: flex; gap: 1rem; flex-wrap: wrap;">
+                    <a href="catalog.html" class="btn">Pedir Ahora ➔</a>
+                    <a href="catalog.html" class="btn btn-secondary">Ver Menú 📖</a>
+                </div>
+            </div>
+            <div class="hero-image">
+                <img src="assets/img/products/125C11E0-80DB-48BB-B18E-63DC96A301CD_sGHaFKM.jpeg" alt="Churros Buen Apetito">
+            </div>
+        </section>
+
+        <section style="margin-bottom: 3rem;">
+            <div class="section-title">
+                <h2>🔥 Promociones</h2>
+                <a href="catalog.html">Ver todas →</a>
+            </div>
+            <div id="promo-products" class="product-grid">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
+
+        <section style="margin-bottom: 4rem;">
+            <div class="section-title">
+                <h2>⭐ Productos Destacados</h2>
+                <a href="catalog.html">Ver todos →</a>
+            </div>
+            <div id="featured-products" class="product-grid">
+                <!-- Loaded dynamically -->
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Buen Apetito. Todos los derechos reservados. 🍩</p>
+    </footer>
+
+    <script type="module">
+        import { getProducts, formatPrice } from './assets/js/products.js';
+        import './assets/js/app.js';
+
+        async function loadHome() {
+            const products = await getProducts();
+            
+            // Promos (products with old_price or badge)
+            const promos = products.filter(p => p.old_price || p.badge_text);
+            const promoContainer = document.getElementById('promo-products');
+            promoContainer.innerHTML = promos.map(p => `
+                <div class="product-card" onclick="window.location.href='product.html?id=${p.id}'" style="cursor: pointer;">
+                    ${p.badge_text ? `<span class="product-badge">${p.badge_text}</span>` : ''}
+                    <div class="product-img-wrapper">
+                        <img src="${p.image}" alt="${p.name}">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">${p.name}</h3>
+                        <p class="product-desc">${p.description}</p>
+                        <div class="product-footer">
+                            <div>
+                                <span class="product-price">${formatPrice(p.price)}</span>
+                                ${p.old_price ? `<span class="old-price">${formatPrice(p.old_price)}</span>` : ''}
+                            </div>
+                            <span class="btn" style="padding: 0.4rem 1rem; font-size: 0.85rem;">Agregar +</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+
+            // Featured
+            const featuredContainer = document.getElementById('featured-products');
+            featuredContainer.innerHTML = products.slice(0, 4).map(p => `
+                <div class="product-card" onclick="window.location.href='product.html?id=${p.id}'" style="cursor: pointer;">
+                    ${p.badge_text ? `<span class="product-badge">${p.badge_text}</span>` : ''}
+                    <div class="product-img-wrapper">
+                        <img src="${p.image}" alt="${p.name}">
+                    </div>
+                    <div class="product-info">
+                        <h3 class="product-title">${p.name}</h3>
+                        <p class="product-desc">${p.description}</p>
+                        <div class="product-footer">
+                            <div>
+                                <span class="product-price">${formatPrice(p.price)}</span>
+                                ${p.old_price ? `<span class="old-price">${formatPrice(p.old_price)}</span>` : ''}
+                            </div>
+                            <span class="btn" style="padding: 0.4rem 1rem; font-size: 0.85rem;">Agregar +</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        loadHome();
+    </script>
+</body>
+</html>

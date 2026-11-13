@@ -1,0 +1,93 @@
+{
+  "extras": [
+    { "id": 1, "name": "Chocolate", "price": 500 },
+    { "id": 3, "name": "Manjar", "price": 500 },
+    { "id": 4, "name": "Leche Condensada", "price": 500 },
+    { "id": 7, "name": "Azucar Flor", "price": 0 }
+  ],
+  "products": [
+    {
+      "id": 1,
+      "name": "Churros Tradicionales",
+      "description": "Deliciosos churros tradicionales recién preparados, crujientes por fuera y suaves por dentro. Personalízalos con tus toppings favoritos.",
+      "price": 4500,
+      "old_price": null,
+      "badge_text": null,
+      "image": "assets/img/products/125C11E0-80DB-48BB-B18E-63DC96A301CD_sGHaFKM.jpeg",
+      "active": true,
+      "extras": [1, 3, 4, 7],
+      "portions": [
+        { "id": 1, "name": "6 unidades", "price": 4500, "order": 1 },
+        { "id": 2, "name": "12 unidades", "price": 8500, "order": 2 },
+        { "id": 3, "name": "20 unidades", "price": 14500, "order": 3 }
+      ]
+    },
+    {
+      "id": 2,
+      "name": "Churros Rellenos",
+      "description": "Deliciosos churros rellenos de chocolate, manjar o leche condensada. Elige tu sabor favorito y personalízalos con toppings adicionales para una experiencia aún más dulce.\n\nRelleno manjar incluido",
+      "price": 6500,
+      "old_price": null,
+      "badge_text": null,
+      "image": "assets/img/products/Diseño_sin_título_12.png",
+      "active": true,
+      "extras": [1, 3, 4, 7],
+      "portions": [
+        { "id": 4, "name": "6 unidades", "price": 6500, "order": 1 },
+        { "id": 5, "name": "12 unidades", "price": 12500, "order": 2 },
+        { "id": 6, "name": "20 unidades", "price": 21000, "order": 3 }
+      ]
+    },
+    {
+      "id": 3,
+      "name": "Churro Jumbo",
+      "description": "Nuestro churro jumbo de 18 cm destaca por su tamaño y sabor. Recién preparado, crujiente por fuera y suave por dentro. Personalízalo con chocolate, manjar o leche condensada.\n\nRelleno manjar incluido",
+      "price": 1700,
+      "old_price": null,
+      "badge_text": null,
+      "image": "assets/img/products/Jumbo-Churro.jpg",
+      "active": true,
+      "extras": [1, 3, 4, 7],
+      "portions": [
+        { "id": 7, "name": "1 unidad", "price": 1700, "order": 1 },
+        { "id": 8, "name": "3 unidades", "price": 4800, "order": 2 }
+      ]
+    },
+    {
+      "id": 4,
+      "name": "Pack Familiar",
+      "description": "20 Churros Tradicionales recién preparados.\n\nIdeal para compartir en familia o reuniones.",
+      "price": 13500,
+      "old_price": 14500,
+      "badge_text": "SUPER PROMO",
+      "image": "assets/img/products/IMG_20190812_182641.jpg",
+      "active": true,
+      "extras": [1, 3, 4, 7],
+      "portions": []
+    },
+    {
+      "id": 5,
+      "name": "Pack Mix",
+      "description": "6 Churros Tradicionales\n\n+\n\n6 Churros Rellenos\n\nChocolate, Manjar o Leche Condensada.",
+      "price": 9990,
+      "old_price": 11000,
+      "badge_text": "MAS VENDIDO",
+      "image": "assets/img/products/rosy-ko-23dFj4fMPnc-unsplash.jpg",
+      "active": true,
+      "extras": [1, 3, 4, 7],
+      "portions": []
+    },
+    {
+      "id": 6,
+      "name": "Pack Pareja",
+      "description": "Pack Pareja\n\n6 Churros Tradicionales\n\n+\n\n2 Churros Jumbo\n\n+\n\n1 Salsa adicional\n\n$7.990",
+      "price": 7990,
+      "old_price": null,
+      "badge_text": "ESPECIAL PAREJA",
+      "image": "assets/img/products/spencer-davis-qw6qQQyYQpo-unsplash.jpg",
+      "active": true,
+      "extras": [1, 3, 4, 7],
+      "portions": []
+    }
+  ]
+}

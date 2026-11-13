@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Detalle de Producto - Buen Apetito</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header>
+        <div class="nav-container">
+            <a href="index.html" class="logo">
+                👨‍🍳 Buen <span>Apetito</span>
+            </a>
+            <nav class="nav-links">
+                <a href="index.html">Inicio</a>
+                <a href="catalog.html">Menú</a>
+                <a href="cart.html" class="cart-icon-btn">
+                    🛒
+                    <span class="cart-badge" style="display: none;">0</span>
+                </a>
+            </nav>
+        </div>
+    </header>
+
+    <main>
+        <div style="margin-bottom: 1.5rem;">
+            <a href="catalog.html" style="color: var(--primary-color); font-weight: 600;">← Volver al menú</a>
+        </div>
+
+        <div id="product-detail" class="product-detail-container">
+            <!-- Loaded dynamically -->
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2026 Buen Apetito. Todos los derechos reservados. 🍩</p>
+    </footer>
+
+    <script type="module">
+        import { getProductById, getExtras, formatPrice } from './assets/js/products.js';
+        import { addToCart } from './assets/js/cart.js';
+        import './assets/js/app.js';
+
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        async function initProduct() {
+            if (!productId) {
+                window.location.href = 'catalog.html';
+                return;
+            }
+
+            const product = await getProductById(productId);
+            const allExtras = await getExtras();
+
+            if (!product) {
+                window.location.href = 'catalog.html';
+                return;
+            }
+
+            const productExtras = allExtras.filter(e => product.extras && product.extras.includes(e.id));
+            const portions = product.portions || [];
+
+            let selectedPortion = portions.length > 0 ? portions[0] : null;
+            let currentBasePrice = selectedPortion ? parseFloat(selectedPortion.price) : parseFloat(product.price);
+            let quantity = 1;
+
+            const container = document.getElementById('product-detail');
+            container.innerHTML = `
+                <div>
+                    <img src="${product.image}" alt="${product.name}" class="product-detail-img">
+                </div>
+                <div class="product-detail-info">
+                    <h1>${product.name}</h1>
+                    <div id="dynamic-price" class="product-detail-price">${formatPrice(currentBasePrice)}</div>
+                    <p class="product-detail-desc">${product.description}</p>
+
+                    ${portions.length > 0 ? `
+                        <div class="options-group">
+                            <label>Selecciona la Porción:</label>
+                            <div class="portions-grid">
+                                ${portions.map((port, idx) => `
+                                    <div class="option-card ${idx === 0 ? 'selected' : ''}" data-portion-id="${port.id}" data-price="${port.price}">
+                                        <span>${port.name}</span>
+                                        <span style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">${formatPrice(port.price)}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    ${productExtras.length > 0 ? `
+                        <div class="options-group">
+                            <label>Elige tu relleno / toppings:</label>
+                            <div class="extras-grid">
+                                ${productExtras.map(ext => `
+                                    <div class="option-card extra-checkbox" data-extra-id="${ext.id}" data-price="${ext.price}">
+                                        <span>${ext.name}</span>
+                                        <span style="font-size: 0.8rem; color: var(--text-muted); margin-top: 4px;">+${formatPrice(ext.price)}</span>
+                                    </div>
+                                `).join('')}
+                            </div>
+                        </div>
+                    ` : ''}
+
+                    <div class="options-group">
+                        <label>Cantidad:</label>
+                        <div class="quantity-selector">
+                            <button type="button" class="qty-btn" id="decrease-qty">-</button>
+                            <input type="text" id="qty-input" value="1" readonly>
+                            <button type="button" class="qty-btn" id="increase-qty">+</button>
+                        </div>
+                    </div>
+
+                    <button type="button" id="add-to-cart-btn" class="btn" style="width: 100%; padding: 1.1rem; font-size: 1.1rem;">
+                        Agregar al Pedido 🛒
+                    </button>
+                </div>
+            `;
+
+            let selectedPortionId = selectedPortion ? selectedPortion.id : null;
+            let selectedExtraIds = [];
+
+            function calculateTotalPrice() {
+                let base = selectedPortion ? parseFloat(selectedPortion.price) : parseFloat(product.price);
+                selectedExtraIds.forEach(extId => {
+                    const ext = allExtras.find(e => e.id === extId);
+                    if (ext) base += parseFloat(ext.price);
+                });
+                return base * quantity;
+            }
+
+            function updatePriceDisplay() {
+                const total = calculateTotalPrice();
+                document.getElementById('dynamic-price').textContent = formatPrice(total);
+            }
+
+            if (portions.length > 0) {
+                container.querySelectorAll('.portions-grid .option-card').forEach(card => {
+                    card.addEventListener('click', () => {
+                        container.querySelectorAll('.portions-grid .option-card').forEach(c => c.classList.remove('selected'));
+                        card.classList.add('selected');
+                        selectedPortionId = parseInt(card.dataset.portionId);
+                        selectedPortion = portions.find(p => p.id === selectedPortionId);
+                        updatePriceDisplay();
+                    });
+                });
+            }
+
+            container.querySelectorAll('.extras-grid .option-card').forEach(card => {
+                card.addEventListener('click', () => {
+                    card.classList.toggle('selected');
+                    const extraId = parseInt(card.dataset.extraId);
+                    if (card.classList.contains('selected')) {
+                        selectedExtraIds.push(extraId);
+                    } else {
+                        selectedExtraIds = selectedExtraIds.filter(id => id !== extraId);
+                    }
+                    updatePriceDisplay();
+                });
+            });
+
+            const qtyInput = document.getElementById('qty-input');
+            document.getElementById('decrease-qty').addEventListener('click', () => {
+                if (quantity > 1) {
+                    quantity--;
+                    qtyInput.value = quantity;
+                    updatePriceDisplay();
+                }
+            });
+
+            document.getElementById('increase-qty').addEventListener('click', () => {
+                quantity++;
+                qtyInput.value = quantity;
+                updatePriceDisplay();
+            });
+
+            document.getElementById('add-to-cart-btn').addEventListener('click', () => {
+                const extrasObjs = allExtras.filter(e => selectedExtraIds.includes(e.id));
+                addToCart(product, quantity, selectedExtraIds, selectedPortion, extrasObjs);
+                
+                const btn = document.getElementById('add-to-cart-btn');
+                btn.textContent = '¡Agregado con éxito! ✓';
+                btn.style.background = '#28a745';
+                setTimeout(() => {
+                    window.location.href = 'cart.html';
+                }, 800);
+            });
+        }
+
+        initProduct();
+    </script>
+</body>
+</html>
