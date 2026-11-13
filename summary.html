@@ -56,7 +56,8 @@
         }
 
         const container = document.getElementById('summary-content');
-        const deliveryLabel = checkoutData.delivery_type === 'delivery' ? 'Delivery' : 'Retiro en Local';
+        const isDelivery = checkoutData.delivery_type === 'delivery';
+        const deliveryLabel = isDelivery ? 'Delivery (Solo Bajos de Mena)' : 'Retiro en Local';
         
         let subtotal = 0;
         let itemsHtml = '';
@@ -71,13 +72,21 @@
             `;
         });
 
-        // Optional delivery fee simulation if delivery selected
-        const deliveryFee = checkoutData.delivery_type === 'delivery' ? 1500 : 0;
+        const deliveryFee = isDelivery ? 1500 : 0;
         const totalFinal = subtotal + deliveryFee;
-
         const randomOrderNum = Math.floor(1000 + Math.random() * 9000);
 
+        const policyNotice = isDelivery 
+            ? `⚠️ <strong>Importante:</strong> Solo realizamos delivery dentro de <strong>Bajos de Mena</strong>. Para que tu pedido ingrese a cocina, <strong>debe ser pagado previamente por transferencia</strong>.`
+            : `ℹ️ <strong>Información:</strong> Para retiro en local, puedes pagar en <strong>efectivo o transferencia</strong> al retirar.`;
+
         container.innerHTML = `
+            <div class="order-details-card" style="background: var(--primary-light); border-left: 4px solid var(--primary-color);">
+                <p style="font-size: 0.9rem; line-height: 1.5; color: var(--text-dark);">
+                    ${policyNotice}
+                </p>
+            </div>
+
             <div class="order-details-card">
                 <div style="text-align: center; margin-bottom: 1rem; font-weight: 700; color: var(--primary-color);">
                     Pedido N° #${randomOrderNum}
@@ -85,7 +94,7 @@
                 <p><strong>Cliente:</strong> ${checkoutData.customer_name}</p>
                 <p><strong>Teléfono:</strong> ${checkoutData.phone}</p>
                 <p><strong>Tipo Entrega:</strong> ${deliveryLabel}</p>
-                ${checkoutData.delivery_type === 'delivery' ? `<p><strong>Dirección:</strong> ${checkoutData.address}</p>` : ''}
+                ${isDelivery ? `<p><strong>Dirección:</strong> ${checkoutData.address}</p>` : ''}
             </div>
 
             <div class="order-details-card">
@@ -97,9 +106,9 @@
                     <span>Subtotal</span>
                     <span>${formatPrice(subtotal)}</span>
                 </div>
-                ${checkoutData.delivery_type === 'delivery' ? `
+                ${isDelivery ? `
                 <div class="summary-row">
-                    <span>Delivery</span>
+                    <span>Delivery (Bajos de Mena)</span>
                     <span>${formatPrice(deliveryFee)}</span>
                 </div>
                 ` : ''}
